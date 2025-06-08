@@ -1,0 +1,36 @@
+# ===============================
+# NODE.JS BACKEND IGNORE (Backend/)
+# ===============================
+Backend/node_modules/
+Backend/.env
+Backend/logs/
+Backend/*.log
+Backend/.DS_Store
+Backend/Thumbs.db
+Backend/dist/
+Backend/build/
+Backend/.vscode/
+Backend/.idea/
+
+# ===============================
+# REACT FRONTEND IGNORE (Frontend/)
+# ===============================
+Frontend/node_modules/
+Frontend/.env
+Frontend/.DS_Store
+Frontend/Thumbs.db
+Frontend/build/
+Frontend/.vscode/
+Frontend/.idea/
+
+# ===============================
+# GENERAL SYSTEM/IDE IGNORE
+# ===============================
+*.log
+*.env
+*.local
+*.cache
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
