@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconButton, Dialog, TextField, MenuItem } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const tagOptions = [
   { value: "Work", label: "Work", color: "bg-amber-800" },
@@ -9,27 +10,48 @@ const tagOptions = [
   { value: "Friend", label: "Friend", color: "bg-green-800" },
 ];
 
-const ContactDetails = ({ contact, onUpdateContact }) => {
+const ContactDetails = ({ contact, onUpdateContact, onDeleteContact }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editedContact, setEditedContact] = useState({});
 
+  const currentTagOption = tagOptions.find(opt => opt.value === contact.tag);
+  const tagColorClass = currentTagOption ? currentTagOption.color : "bg-gray-500";
+  // When contact changes, reset editedContact
+  useEffect(() => {
+    if (contact) {
+      setEditedContact({
+        ...contact,
+        phonePersonal: contact.phone?.Personal || '',
+        phoneWork: contact.phone?.Work || '',
+        emailPersonal: contact.email?.Personal || '',
+        emailWork: contact.email?.Work || '',
+      });
+    }
+  }, [contact]);
+
   const onEdit = () => {
-    setEditedContact({
-      ...contact,
-      phonePersonal: contact.phone?.Personal || '',
-      phoneWork: contact.phone?.Work || '',
-      emailPersonal: contact.email?.Personal || '',
-      emailWork: contact.email?.Work || '',
-    });
     setOpenDialog(true);
   };
 
   const onDelete = () => {
-    // Add your delete logic here
+    if (onDeleteContact) {
+      onDeleteContact(contact);
+    }
   };
 
   const handleInputChange = (e) => {
-    setEditedContact(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+
+    setEditedContact(prev => {
+      let updated = { ...prev, [name]: value };
+
+      // Sync tagColor automatically when tag changes
+      if (name === "tag") {
+        const selectedTag = tagOptions.find(opt => opt.value === value);
+        if (selectedTag) updated.tagColor = selectedTag.color;
+      }
+      return updated;
+    });
   };
 
   const handleFormSubmit = (e) => {
@@ -47,6 +69,7 @@ const ContactDetails = ({ contact, onUpdateContact }) => {
       },
     };
 
+    // Remove temporary fields
     delete updated.phonePersonal;
     delete updated.phoneWork;
     delete updated.emailPersonal;
@@ -60,7 +83,7 @@ const ContactDetails = ({ contact, onUpdateContact }) => {
 
   return (
     <>
-      <div className="bg-[#111111] basis-2/3 rounded-2xl p-6 text-white shadow-lg flex flex-col gap-4">
+      <div className="bg-[#111111] basis-2/3 rounded-2xl max-h-[90vh] p-6 text-white shadow-lg flex flex-col gap-4">
         <div className="flex flex-row justify-between">
           <h2 className="text-xl font-semibold mb-2">Contact Details</h2>
           <div className="flex flex-row gap-4">
@@ -74,13 +97,14 @@ const ContactDetails = ({ contact, onUpdateContact }) => {
         </div>
 
         <div className="bg-[#1f1e1e] rounded-3xl p-4 flex flex-col items-center justify-center">
-          <div className="w-32 h-32 overflow-clip rounded-4xl">
-            <img className="object-cover w-full h-full" src={contact.image} alt={contact.name} />
+          <div className="w-32 h-32 flex items-center justify-center bg-gray-700 rounded-4xl">
+            <AccountCircleIcon style={{ fontSize: 100, color: 'white' }} />
           </div>
+
           <div className="p-4 gap-3 flex flex-col items-center">
             <div className="text-4xl">{contact.name}</div>
             <div className="text-md">{contact.role}</div>
-            <div className={`p-2 ${contact.tagColor} w-max rounded-3xl text-xs font-bold flex items-center`}>
+            <div className={`p-2 ${tagColorClass} w-max rounded-3xl text-xs font-bold flex items-center`}>
               {contact.tag}
             </div>
           </div>
@@ -91,7 +115,7 @@ const ContactDetails = ({ contact, onUpdateContact }) => {
         <ContactInfoGroup title="Birthday" data={{ Birthday: contact.birthday }} />
       </div>
 
-      {/* 🛠️ Edit Dialog */}
+      {/* Edit Dialog */}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

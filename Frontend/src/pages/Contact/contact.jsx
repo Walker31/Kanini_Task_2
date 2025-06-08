@@ -1,45 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import ContactList from './contactList';
 import ContactDetails from './details';
-import dp1 from "../../assets/ProfilePics/2.jpg";
-import dp2 from "../../assets/ProfilePics/1.jpg";
-import dp3 from "../../assets/ProfilePics/4.jpg";
 
 const Contact = () => {
-  const contacts = [
-    {
-      name: 'Aditya Janga',
-      tag: 'Work',
-      tagColor: 'bg-amber-800',
-      role: 'App Developer',
-      image: dp1,
-      phone: { Personal: '+91 7200148738', Work: '+91 7200148738' },
-      email: { Personal: 'walker310407@gmail.com', Work: 'adityajanga@gmail.com' },
-      birthday: 'July 31, 2004',
-    },
-    {
-      name: 'Keerthi',
-      tag: 'Family',
-      tagColor: 'bg-blue-800',
-      role: 'Interior Designer',
-      image: dp2,
-      phone: { Personal: '+91 9999999999', Work: '+91 8888888888' },
-      email: { Personal: 'keerthi@gmail.com', Work: 'keerthi.work@gmail.com' },
-      birthday: 'May 12, 1999',
-    },
-    {
-      name: 'Aryan',
-      tag: 'Friend',
-      tagColor: 'bg-green-800',
-      role: 'Doctor',
-      image: dp3,
-      phone: { Personal: '+91 7777777777' },
-      email: { Personal: 'aryan@gmail.com' },
-      birthday: 'August 20, 2000',
-    }
-  ];
+  const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
 
-  const [selectedContact, setSelectedContact] = useState(contacts[0]);
+  // Fetch contacts from backend
+  useEffect(() => {
+    axios.get('http://localhost:5000/contacts/')
+      .then((res) => {
+        setContacts(res.data);
+        setSelectedContact(res.data[0]); // Set first contact by default
+      })
+      .catch((err) => {
+        console.error('Error fetching contacts:', err);
+      });
+  }, []);
 
   return (
     <div className="flex flex-col lg:flex-row justify-between h-screen overflow-y-auto p-4">
@@ -48,7 +26,7 @@ const Contact = () => {
           contacts={contacts}
           onSelectContact={setSelectedContact}
         />
-        <ContactDetails contact={selectedContact} />
+        {selectedContact && <ContactDetails contact={selectedContact} />}
       </div>
     </div>
   );

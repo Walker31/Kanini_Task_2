@@ -22,7 +22,7 @@ const ContactList = ({ contacts, onSelectContact }) => {
     { !hide && (
       <>
     <Toolbar />
-    <div className="flex flex-col mt-4 gap-4 overflow-y-auto">
+    <div className="flex flex-col mt-4 gap-4 overflow-y-auto max-h-170">
       {contacts.map((contact, index) => (
         <div key={index} onClick={() => onSelectContact(contact)} className="cursor-pointer">
           <ContactCard {...contact} />

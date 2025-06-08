@@ -4,13 +4,13 @@ import Contact from './pages/Contact/contact';
 import Note from "./pages/Notes/note";
 
 function Layout() {
-  return (  
-    <div className="flex flex-col min-h-screen">
-      <div className="fixed top-0 left-0 right-0 z-50">
+  return (
+    <div className="flex flex-col h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50 h-16">
         <Navbar />
       </div>
 
-      <main className="flex-1 pt-16 px-4">
+      <main className="flex-1 pt-16 px-4 overflow-y-auto">
         <Outlet />
       </main>
     </div>
