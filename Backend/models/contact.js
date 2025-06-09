@@ -11,14 +11,14 @@ const ContactSchema = new mongoose.Schema(
             enum: ['Work','Family','Friend'],
             required : true
         },
-        role: {
+        profession: {
             type: String,
             required: true
         },
         phone: {
             Personal: {
             type: String,
-            required: true
+            required:true
             },
             Work: {
             type: String,
@@ -28,7 +28,7 @@ const ContactSchema = new mongoose.Schema(
         email: {
             Personal: {
             type: String,
-            required: true
+            required: false
             },
             Work: {
             type: String,
@@ -37,7 +37,7 @@ const ContactSchema = new mongoose.Schema(
         },
         birthday: {
             type: Date,
-            required: true
+            required:false
         }
     },{ collection: 'Contacts' }
 )

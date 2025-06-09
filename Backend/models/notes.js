@@ -11,7 +11,6 @@ const NoteSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['Work', 'Personal', 'Others'],
     required: true
   }
 }, { collection: 'Notes',timestamps: true });
