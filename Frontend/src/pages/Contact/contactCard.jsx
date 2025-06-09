@@ -7,7 +7,7 @@ const tagOptions = [
   { value: "Friend", label: "Friend", color: "bg-green-800" },
 ];
 
-const ContactCard = ({ name, tag, role }) =>  {
+const ContactCard = ({ name, tag, profession }) =>  {
   const currentTagOption = tagOptions.find(opt => opt.value === tag);
   const tagColorClass = currentTagOption ? currentTagOption.color : "bg-gray-500";
 
@@ -24,7 +24,7 @@ const ContactCard = ({ name, tag, role }) =>  {
             {tag}
           </span>
         </div>
-        <span className="text-sm text-gray-300">{role}</span>
+        <span className="text-sm text-gray-300">{profession}</span>
       </div>
     </div>
     <div className="h-10 w-10 border-2 border-white rounded-full flex items-center justify-center cursor-pointer">

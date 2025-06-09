@@ -1,7 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider, useLocation } from "react-router-dom"
 import Navbar from "./components/Navbar";
 import Contact from './pages/Contact/contact';
-import Note from "./pages/Notes/note";
+import NoteMain from "./pages/Notes/noteMain";
 
 function Layout() {
   return (
@@ -10,7 +10,7 @@ function Layout() {
         <Navbar />
       </div>
 
-      <main className="flex-1 pt-16 px-4 overflow-y-auto">
+      <main className="flex-1 pt-16 px-4 h-full overflow-y-auto">
         <Outlet />
       </main>
     </div>
@@ -32,7 +32,7 @@ function App() {
     createRoutesFromElements(
       <Route path='/' element={<Layout/>}>
         <Route index element={<Contact/>} />
-        <Route path="notes" element={<Note/>} />
+        <Route path="notes" element={<NoteMain/>} />
         <Route path="*" element={<NotFound/>} />
       </Route>
       
