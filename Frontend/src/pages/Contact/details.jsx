@@ -92,16 +92,19 @@ const ContactDetails = ({ contact, onUpdateContact, onDeleteContact }) => {
             <AccountCircleIcon style={{ fontSize: 100, color: 'white' }} />
           </div>
           <div className="p-4 gap-3 flex flex-col items-center">
-            <div className="text-4xl">{contact.name}</div>
-            <div className="text-md">{contact.profession}</div>
-            <div className={`p-2 ${tagColorClass} w-max rounded-3xl text-xs font-bold flex items-center`}>
+            <div className="text-4xl font-bold">{contact.name}</div>
+            <div className="text-md text-gray-400 mt-1">{contact.profession}</div>
+            <div className={`px-3 py-1 ${tagColorClass} w-max rounded-full text-xs font-semibold`}>
               {contact.tag}
             </div>
           </div>
         </div>
 
+        <div className="border-t border-gray-700 my-2" />
         <ContactInfoGroup title="Phone Numbers" data={contact.phone} />
+        <div className="border-t border-gray-700 my-2" />
         <ContactInfoGroup title="Emails" data={contact.email} />
+        <div className="border-t border-gray-700 my-2" />
         <ContactInfoGroup title="Birthday" data={{ Birthday: formattedBirthday }} />
       </div>
 

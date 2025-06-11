@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { TextField, MenuItem, Button } from "@mui/material";
 import axios from "axios";
+import NoteModal from "./noteModal";
 import Note from "./note";
 
 const categories = ["All", "Work", "Projects", "Personal", "Other"];
@@ -93,102 +94,52 @@ const NoteMain = () => {
         ))}
       </div>
 
-      {/* Add Note Modal */}
       {showAdd && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <AddNote
-            onAddNote={handleAddNote}
+          <NoteModal
+            mode="add"
+            initialData={{ title: "", content: "", category: "Other" }}
             onClose={() => setShowAdd(false)}
+            onSubmit={async (form) => {
+              try {
+                const response = await axios.post("http://localhost:5000/notes/create", form);
+                handleAddNote(response.data);
+              } catch (error) {
+                console.error("Error adding note:", error);
+                alert("Failed to add note. Please try again");
+              }
+            }}
           />
         </div>
       )}
 
+
       {/* Edit Note Modal */}
       {selectedNote && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-8">
-          <div className="bg-gray-800 flex flex-col gap-4 rounded-xl max-w-3xl w-full p-6 relative">
-            <button
-              onClick={closeNote}
-              className="= text-white text-lg"
-            >
-              ✕
-            </button>
-
-            <TextField
-              label="Title"
-              variant="outlined"
-              value={selectedNote.title}
-              onChange={(e) => handleFieldChange("title", e.target.value)}
-              fullWidth
-              InputLabelProps={{ style: { color: "white" } }}
-              InputProps={{ style: { color: "white" } }}
-              className="mb-4"
-            />
-
-            <TextField
-              select
-              label="Category"
-              variant="outlined"
-              value={selectedNote.category}
-              onChange={(e) => handleFieldChange("category", e.target.value)}
-              fullWidth
-              InputLabelProps={{ style: { color: "white" } }}
-              InputProps={{ style: { color: "white" } }}
-              className="mb-4"
-            >
-              {categories.map((cat) => (
-                <MenuItem key={cat} value={cat}>
-                  {cat}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              label="Content"
-              variant="outlined"
-              value={selectedNote.content}
-              onChange={(e) => handleFieldChange("content", e.target.value)}
-              fullWidth
-              multiline
-              minRows={5}
-              InputLabelProps={{ style: { color: "white" } }}
-              InputProps={{ style: { color: "white" } }}
-              className="mb-4"
-            />
-
-            <div className="flex justify-between items-center mt-4">
-              <span className="text-xs text-gray-400">
-                Last updated:{" "}
-                {new Date(selectedNote.updatedAt).toLocaleDateString()}
-              </span>
-
-              <Button
-                variant="contained"
-                color="success"
-                onClick={async () => {
-                  try {
-                    const res = await axios.put(
-                      `http://localhost:5000/notes/${selectedNote._id}`,
-                      selectedNote
-                    );
-                    setNotes((prev) =>
-                      prev.map((n) =>
-                        n._id === selectedNote._id ? res.data : n
-                      )
-                    );
-                    closeNote();
-                  } catch (error) {
-                    console.error("Error updating note:", error);
-                    alert("Failed to update note. Try again.");
-                  }
-                }}
-              >
-                Save Changes
-              </Button>
-            </div>
-          </div>
+          <NoteModal
+            mode="edit"
+            initialData={selectedNote}
+            onClose={closeNote}
+            onSubmit={async (updatedNote) => {
+              try {
+                const res = await axios.put(
+                  `http://localhost:5000/notes/${updatedNote._id}`,
+                  updatedNote
+                );
+                setNotes((prev) =>
+                  prev.map((n) => (n._id === updatedNote._id ? res.data : n))
+                );
+                closeNote();
+              } catch (error) {
+                console.error("Error updating note:", error);
+                alert("Failed to update note. Try again.");
+              }
+            }}
+          />
         </div>
       )}
+
     </div>
   );
 };
@@ -232,8 +183,10 @@ const AddNote = ({ onAddNote, onClose }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col h-7xl w-3xl gap-4 p-4 bg-gray-800 opacity-90 rounded-md"
+      className="flex flex-col w-full max-w-2xl gap-6 p-8 bg-gray-800 shadow-lg rounded-xl transform transition-all duration-300 scale-100 hover:scale-105"
     >
+      <h2 className="text-white text-2xl font-semibold text-center">Add New Note</h2>
+
       <TextField
         label="Title"
         variant="outlined"
